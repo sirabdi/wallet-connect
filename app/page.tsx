@@ -1,65 +1,135 @@
-import Image from "next/image";
+'use client';
+
+import dynamic from 'next/dynamic';
+
+// Client components that require browser APIs / wallet context — loaded client-side only
+const ConnectSection = dynamic(
+  () => import('@/app/components/ConnectSection').then((m) => m.ConnectSection),
+  { ssr: false }
+);
+
+const HeaderWidget = dynamic(
+  () => import('@/app/components/HeaderWidget').then((m) => m.HeaderWidget),
+  { ssr: false }
+);
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="relative min-h-screen overflow-hidden bg-[#0a0a0a] text-white">
+      {/* Gradient background blobs */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-indigo-600/20 blur-[120px]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-purple-600/20 blur-[120px]"
+      />
+
+      {/* Header */}
+      <header className="relative z-10 flex items-center justify-between px-5 py-5 sm:px-10">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-sm">
+            W
+          </div>
+          <span className="font-semibold text-sm tracking-tight">
+            WalletConnect
+          </span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        {/* Shows manage/disconnect widget in header once connected */}
+        <HeaderWidget />
+      </header>
+
+      {/* Hero content */}
+      <section className="relative z-10 flex flex-col items-center justify-center px-5 pt-20 pb-10 sm:pt-32 sm:px-10 text-center">
+        {/* Badge */}
+        <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-xs font-medium text-indigo-300">
+          <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+          Powered by Dynamic.xyz
+        </span>
+
+        <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl">
+          Connect Your{' '}
+          <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            Crypto Wallet
+          </span>
+        </h1>
+
+        <p className="mt-5 max-w-lg text-base text-gray-400 sm:text-lg">
+          Seamlessly connect MetaMask, Trust Wallet, Coinbase Wallet, and 600+
+          other wallets. Works on both desktop and mobile.
+        </p>
+
+        {/* Supported wallets chips */}
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          {['MetaMask', 'Trust Wallet', 'Coinbase', 'WalletConnect', 'Rainbow'].map(
+            (name) => (
+              <span
+                key={name}
+                className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-300"
+              >
+                {name}
+              </span>
+            )
+          )}
         </div>
-      </main>
-    </div>
+
+        {/* Dynamic client-only: connect button or wallet info */}
+        <ConnectSection />
+      </section>
+
+      {/* Features grid */}
+      <section className="relative z-10 mx-auto mt-20 grid max-w-3xl grid-cols-1 gap-4 px-5 sm:grid-cols-3 sm:px-10 pb-20">
+        {[
+          {
+            icon: '🔒',
+            title: 'Non-custodial',
+            desc: 'Your keys, your crypto. We never hold your assets.',
+          },
+          {
+            icon: '⚡',
+            title: 'Instant Connect',
+            desc: 'Sub-second wallet connection with no seed phrase required.',
+          },
+          {
+            icon: '📱',
+            title: 'Mobile Ready',
+            desc: 'Works perfectly on any device — phone, tablet, or desktop.',
+          },
+        ].map(({ icon, title, desc }) => (
+          <div
+            key={title}
+            className="rounded-2xl border border-white/5 bg-white/[0.03] p-5 backdrop-blur-sm hover:border-white/10 transition-colors"
+          >
+            <div className="mb-3 text-2xl">{icon}</div>
+            <h3 className="mb-1 text-sm font-semibold text-white">{title}</h3>
+            <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </section>
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-white/5 px-5 py-6 text-center text-xs text-gray-600 sm:px-10">
+        Built with{' '}
+        <a
+          href="https://www.dynamic.xyz"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-400 hover:underline"
+        >
+          Dynamic.xyz
+        </a>{' '}
+        &amp;{' '}
+        <a
+          href="https://nextjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-400 hover:underline"
+        >
+          Next.js
+        </a>
+      </footer>
+    </main>
   );
 }
+
