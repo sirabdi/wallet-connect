@@ -27,21 +27,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
           'REPLACE_WITH_YOUR_ENVIRONMENT_ID',
         walletConnectors: [EthereumWalletConnectors],
 
-        // 'in-app-browser': user stays in Chrome/Safari. Dynamic uses WalletConnect's
-        // relay server to bridge between Chrome and the wallet app. Chrome sends a
-        // WalletConnect URI → MetaMask opens, user approves → relay notifies Chrome.
-        // This avoids the "stuck loading" issue caused by 'redirect' on Android Chrome,
-        // where the approval happens in a different browser context that Chrome can't see.
-        //
-        // IMPORTANT: For this to work with MetaMask/Trust/Coinbase on mobile you need
-        // a WalletConnect Project ID set in your Dynamic dashboard:
-        //   app.dynamic.xyz → Configurations → Integrations → WalletConnect Project ID
-        // Get a free Project ID at https://cloud.walletconnect.com
-        mobileExperience: 'in-app-browser',
+        // Mobile: redirect to the wallet app (MetaMask / Coinbase / Trust etc.)
+        // which opens the dApp inside the wallet's built-in browser — same as OpenSea.
+        // 'in-app-browser' (default) tries to stay in the current browser context
+        // which often fails because mobile browsers block wallet APIs.
+        mobileExperience: 'redirect',
 
-        // 'universal' uses HTTPS universal links as the deep-link format when opening
-        // the wallet app from Chrome. More reliable than 'native' (URI schemes like
-        // metamask://) across different Android versions and manufacturers.
+        // Use HTTPS universal links when deep-linking to wallet apps on mobile.
+        // 'native' (default) uses custom URI schemes (e.g. metamask://) which can
+        // fail on some devices if the app is not installed.
+        // 'universal' falls back gracefully to the wallet's website if not installed.
         deepLinkPreference: 'universal',
       }}
     >
